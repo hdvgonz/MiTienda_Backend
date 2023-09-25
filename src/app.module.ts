@@ -27,8 +27,4 @@ import { ProductsModule } from './products/products.module';
     CommonModule,
   ],
 })
-export class AppModule {
-  public isOdd(n: number): boolean {
-    return n % 2 !== 0;
-  }
-}
+export class AppModule {}

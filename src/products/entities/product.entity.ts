@@ -1,5 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsOptional } from 'class-validator';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { ProductImage } from './';
 
 @Entity()
 export class Product {
@@ -12,7 +21,7 @@ export class Product {
   title: string;
 
   @Column('float', {
-      default: 0,
+    default: 0,
   })
   price: number;
 
@@ -22,57 +31,63 @@ export class Product {
   })
   description: string;
 
-  @Column('text',{
-      unique: true
+  @Column('text', {
+    unique: true,
   })
   slug: string;
 
-  @Column('numeric',{
-    default: 0
+  @Column('numeric', {
+    default: 0,
   })
   stock: number;
 
   @Column({
-      type: 'text',
-      array: true,
+    type: 'text',
+    array: true,
   })
   sizes: string[];
 
   @Column('text')
   gender: string;
 
-  //TODO: tags, image
-  @Column('text',{
-    array:true,
-    default: []
+  @OneToMany(
+    () => ProductImage,
+    (productImage) => productImage.product,
+    { cascade: true, eager: true }, //Set eager in true to load all images when we call getBy endpoint by Using a FIND method
+  )
+  @IsOptional()
+  images?: ProductImage[];
+
+  @Column('text', {
+    array: true,
+    default: [],
   })
   tags: string[];
 
   @BeforeInsert()
   checkSlugInsert() {
-    
-    if (!this.slug){
+    if (!this.slug) {
       this.slug = this.title;
     }
 
     this.slug = this.slug
-    .toLocaleLowerCase()
-    .replaceAll(' ', '_')
-    .replaceAll("'", '');
+      .toLocaleLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
   }
 
-   @BeforeUpdate()
-   checkSlugUpdate() {
+  @BeforeUpdate()
+  checkSlugUpdate() {
     this.slug = this.title
-    .toLocaleLowerCase()
-    .replaceAll(' ', '_')
-    .replaceAll("'", '');
-}
-// @BeforeUpdate() other good option, but this one does not check if the title was modified
-// checkSlugUpdate() {
-//  this.slug = this.slug
-//  .toLocaleLowerCase()
-//  .replaceAll(' ', '_')
-//  .replaceAll("'", '');
-// }
+      .toLocaleLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
+  // @BeforeUpdate() other good option, but this one does not check if the title was modified
+  // checkSlugUpdate() {
+  //  this.slug = this.slug
+  //  .toLocaleLowerCase()
+  //  .replaceAll(' ', '_')
+  //  .replaceAll("'", '');
+  // }
 }
