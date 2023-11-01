@@ -43,7 +43,7 @@ export class ProductsService {
       }); //Creating object instance
       await this.productsRepository.save(product);
 
-      console.log(product, images);
+     
       return {...product, images}; //Im returning the object as i want to show it in the frontend, because i dont want to show some images details, such as id but only url.
       
     } catch (error) {

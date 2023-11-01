@@ -19,6 +19,8 @@ npm install
 ```
 docker-compose up -d
 ```
+6. Ejecutar seed: 
+```http://localhost:3000/seed```
 
-6. Levantar: 
+7. Levantar: 
 ```npm run start:dev```
